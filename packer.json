@@ -1,0 +1,39 @@
+{
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami": "ami-9eaa1cf6",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "packer-example {{timestamp}}",
+    "vpc_id": "vpc-be7317db",
+    "subnet_id": "subnet-13cfa129",
+    "security_group_id": "sg-d6f431b2",
+    "associate_public_ip_address": true
+  }, {
+    "type": "null",
+    "host": "54.173.60.232",
+    "ssh_username": "ubuntu",
+    "ssh_private_key_file": "/Users/chris/Dropbox/amazon-web-services/keys/chris.pem"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "if ! type 'ansible-playbook' > /dev/null; then echo Installing Ansible...; sudo apt-get -y install software-properties-common; sudo apt-add-repository -y ppa:ansible/ansible; sudo apt-get -y update; sudo apt-get -y install ansible; fi"
+    ]
+  }, {
+    "type": "ansible-local",
+    "playbook_file": "ansible/playbook.yml",
+    "role_paths": [
+      "ansible/tesseract", 
+      "ansible/nodejs",
+      "ansible/nginx"
+    ]
+  }]
+}

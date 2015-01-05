@@ -1,0 +1,6 @@
+- name: install nginx
+  sudo: yes
+  apt: name=nginx state=present
+  tags: nginx
+
+# TODO nginx conf file, restart handler

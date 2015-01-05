@@ -1,0 +1,12 @@
+- name: install nodejs
+  sudo: yes
+  apt: name={{item}} state=present
+  with_items:
+    - nodejs
+    - npm
+  tags: nodejs
+
+- name: upgrade to latest nodejs
+  sudo: yes
+  shell: npm cache clean -f && npm install -g n && n stable
+  tags: nodejs

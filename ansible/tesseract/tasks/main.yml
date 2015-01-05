@@ -1,0 +1,35 @@
+- name: install tesseract dependencies
+  sudo: yes
+  apt: name={{item}} state=present
+  with_items:
+    - g++
+    - make
+    - autoconf
+    - automake
+    - libtool
+    - libpng12-dev
+    - libjpeg-dev
+    - libjpeg8-dev
+    - libtiff4-dev
+    - libtiff5-dev
+    - zlib1g-dev
+    - libleptonica-dev
+  tags: tesseract
+
+- name: untar tesseract tarball
+  unarchive: >
+    src=tesseract-ocr-3.02.02.tar.gz
+    dest=/home/ubuntu
+  tags: tesseract
+
+- name: install tesseract
+  shell: >
+    chdir=/home/ubuntu/tesseract-ocr
+    creates=/usr/local/bin/tesseract
+    ./autogen.sh && ./configure && make && sudo make install && sudo ldconfig
+  tags: tesseract
+
+- name: copy tesseract lang files
+  sudo: yes
+  copy: src=tessdata/ dest=/usr/local/share/tessdata
+  tags: tesseract
